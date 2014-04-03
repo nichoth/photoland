@@ -24,7 +24,7 @@ return {
   --   { key = "httpPreset", default = nil }
   -- },
 
-  startDialog = PhotolandMain.startDialog,
+  startDialog = PhotolandMain.startTask,
 
   sectionsForBottomOfDialog = PhotolandMain.sectionsForBottomOfDialog,
 
