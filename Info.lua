@@ -1,6 +1,6 @@
 return {
 
-  LrSdkVersion = 3.0,
+  LrSdkVersion = 5.0,
   LrToolkitIdentifier = 'com.adobe.lightroom.photoland',
   LrPluginName = "Photoland Website",
 

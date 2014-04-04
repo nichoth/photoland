@@ -25,38 +25,7 @@ return {
     {
       id = 'faculty',
       title = 'Primary Faculty',
-      dataType = 'enum',
-      values = {
-        {
-          value = nil,
-          title = '',
-        },
-        {
-          value = 'Steve Davis',
-          title = 'Steve Davis',
-        },
-        {
-          value = 'Amjad Faur',
-          title = 'Amjad Faur',
-        },
-        {
-          value = 'Bob Haft',
-          title = 'Bob Haft',
-        },
-        {
-          value = 'Hugh Lentz',
-          title = 'Hugh Lentz',
-        },
-        {
-          value = 'Julia Zay',
-          title = 'Julia Zay',
-        },
-        {
-          value = 'Other',
-          title = 'Other',
-        },
-
-      },
+      dataType = 'string',
     },
 
     {
@@ -71,23 +40,23 @@ return {
       dataType = 'enum',
       values = {
         {
-          value = 'BW silver print'
-          title = 'BW silver print'
+          value = 'BW silver print',
+          title = 'BW silver print',
         },
 
         {
-          value = 'Color print (darkroom)'
-          title = 'Color print (darkroom)'
+          value = 'Color print (darkroom)',
+          title = 'Color print (darkroom)',
         },
 
         {
-          value = 'Digital inkjet'
-          title = 'Digital inkjet'
+          value = 'Digital inkjet',
+          title = 'Digital inkjet',
         },
 
         {
-          value = 'Alternative process'
-          title = 'Alternative process'
+          value = 'Alternative process',
+          title = 'Alternative process',
         },
 
       },
