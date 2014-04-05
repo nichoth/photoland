@@ -40,11 +40,7 @@ function HttpUploadTask.outputToLog( message )
 end
 
 function HttpUploadTask.processRenderedPhotos( functionContext, exportContext )
-  
-  local confirm = "By submitting work and information, you agree to allow The Evergreen State College to publish such information, attributed to you as an enrolled student. The creator (you) retain the copyright."
-  
-  LrDialogs.confirm(confirm, nil, 'Agree', 'Don\'t Agree')
-
+    
   -- Make a local reference to the export parameters.
   local exportSession = exportContext.exportSession
   local exportParams = exportContext.propertyTable
