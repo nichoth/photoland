@@ -15,7 +15,6 @@ return {
       id = 'course',
       title = 'Course or Program',
       dataType = 'string',
-
     },
     {
       id = 'description',

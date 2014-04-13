@@ -11,46 +11,139 @@ local LrExportSession = import 'LrExportSession'
 local catalog = import 'LrApplication'.activeCatalog()
 local LrTasks = import 'LrTasks'
 
+-- debug stuff
+local LrLogger = import 'LrLogger'
+local logger = LrLogger('mainLogger')
+logger:enable("logfile")
+
 PhotolandMain = {}
+
+--[[----------------------------------------------------------------------------
+-- Metadata that needs to be set.
+------------------------------------------------------------------------------]]
+PhotolandMain.requiredMetadata = {
+  adobe = 
+  {
+    'creator',
+    'creatorEmail',
+    'title',
+  },
+  photoland = 
+  {
+    'course',
+    'faculty',
+    'medium',
+    'year',
+  },
+  
+}
 
 --[[----------------------------------------------------------------------------
 -- Validate metadata and bind data to UI.
 ------------------------------------------------------------------------------]]
 function PhotolandMain.startDialog(propertyTable)
 
+  -- set up property table for copyright stuff
+  propertyTable.agree = false
+  propertyTable.validMeta = false
+
+  -- add observer for copyright
+  propertyTable:addObserver( 'agree', PhotolandMain.updateStatus )
+
   -- validate metadata
-  LrTasks.startAsyncTask( function (propertyTable)
+  LrTasks.startAsyncTask( function ()
     
-      local photos = catalog:getTargetPhotos()
+    local photos = catalog:getTargetPhotos()
     -- dump('photos', photos)
     -- dump('meta', photos[1]:getFormattedMetadata('title'))
+    -- dump('meta', photos[1]:getPropertyForPlugin('com.adobe.lightroom.photoland', 'course'))
+
+    local customMeta = catalog:batchGetPropertyForPlugin(photos, 'com.adobe.lightroom.photoland', PhotolandMain.requiredMetadata.photoland)
+    local adobeMeta = catalog:batchGetFormattedMetadata(photos, PhotolandMain.requiredMetadata.adobe)
+
+    -- validate adobe metadata
+    for _, photo in pairs(adobeMeta) do
+      for _, metaValue in pairs(photo) do
+        if metaValue == '' or metaValue == nil then
+          dump('inval', _)
+          propertyTable.validMeta = false
+        end
+      end
+    end
+
+    -- validate photoland metadata
+    for _, photo in pairs(customMeta) do
+      for _, requiredMeta in pairs(PhotolandMain.requiredMetadata.photoland) do
+        if photo[requiredMeta] == nil or photo[requiredMeta] == '' then
+          dump('inval2', requiredMeta)
+          propertyTable.validMeta = false
+        end
+      end
+    end
+
+
+
+    -- dump('meta', customMeta)
+    -- dump('adobe', adobeMeta)
+
+    -- dump('validFunc', PhotolandMain.isValidMeta(customMeta))
+    -- dump('validFuncAdobe', PhotolandMain.isValidMeta(adobeMeta))
+
+
+    -- if PhotolandMain.isValidMeta(customMeta) and PhotolandMain.isValidMeta(adobeMeta) then
+    --   propertyTable.validMeta = true
+    -- end
+    -- PhotolandMain.isValidMeta(customMeta)
+    -- PhotolandMain.isValidMeta(adobeMeta)
+    -- dump('table', customMeta)
 
   end)
 
-  dump('table', propertyTable.LR_cantExportBecause)
+  -- dump('valid', propertyTable.validMeta)
 
-  -- create property for copyright disclosure
-  propertyTable.bc = 'You have to agree to the copyright stuff.'
-  propertyTable.can_export = false
-  propertyTable.LR_cantExportBecause = propertyTable.bc
-
-  propertyTable:addObserver( 'can_export', updateStatus )
-
-  -- propertyTable.LR_cantExportBecause = LrView.bind(propertyTable.checkbox_state)
+  PhotolandMain.updateStatus(propertyTable)
   
 end
+
+
+-- obsolete
+--[[----------------------------------------------------------------------------
+-- Utility. Checks if the metadata in the array pf photos is set.
+------------------------------------------------------------------------------]]
+-- function PhotolandMain.isValidMeta( photoArray )
+
+--   for _, photo in pairs(photoArray) do
+--     for metaKey, metaValue in pairs(photo) do
+
+--       -- dump('value', metaValue)
+--       if metaValue == '' or metaValue == nil then
+--         -- dump('empty string', _)
+--         -- return false
+--       end
+
+--     end
+--   end
+
+--   return true
+-- end
+
+
 
 
 --[[----------------------------------------------------------------------------
 -- Updates whether or not we are allowed to export.
 
 ------------------------------------------------------------------------------]]
-function updateStatus( propertyTable )
+function PhotolandMain.updateStatus( propertyTable )
 
-  if propertyTable.can_export == true then
-    propertyTable.LR_cantExportBecause = nil
+  local message = nil
+
+  if propertyTable.validMeta == false then
+    propertyTable.LR_cantExportBecause = "Not all required metadata is set."
+  elseif not propertyTable.agree then
+    propertyTable.LR_cantExportBecause = "You have to agree to the copyright stuff."
   else
-    propertyTable.LR_cantExportBecause = propertyTable.bc
+    propertyTable.LR_cantExportBecause = nil
   end
 end
 
@@ -58,8 +151,7 @@ end
 
 
 --[[----------------------------------------------------------------------------
----Bottom section. Consent for copyright stuff.
---- @todo bind checkbox to some data.
+-- Bottom dialog section. Consent for copyright stuff.
 ------------------------------------------------------------------------------]]
 function PhotolandMain.sectionsForBottomOfDialog(_, propertyTable)
 
@@ -83,14 +175,14 @@ function PhotolandMain.sectionsForBottomOfDialog(_, propertyTable)
           bind_to_object = propertyTable,
           f:checkbox {
             title = 'Agree',
-            value = LrView.bind('can_export'),
+            value = LrView.bind('agree'),
             checked_value = true,
             unchecked_value = false,
           },
 
           f:static_text {
             fill_horizontal = 1,
-            title = LrView.bind('can_export'), -- bound to same key as checkbox value
+            title = LrView.bind('agree'), -- bound to same key as checkbox value
           },
         }
       }

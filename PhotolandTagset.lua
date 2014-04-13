@@ -28,5 +28,4 @@ return {
     'com.adobe.creatorWorkWebsite',
 
   }
-
 }
