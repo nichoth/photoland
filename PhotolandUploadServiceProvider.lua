@@ -7,11 +7,13 @@ require "HttpUploadTask"
 require 'Util'
 
 return {
-  showSections = {
-    'fileNaming',
+  hideSections = {
     'fileSettings',
-    'outputSharpening',
     'watermarking',
+    'metadata',
+    'outputSharpening',
+    'video',
+    'exportLocation',
   },
 
   allowFileFormats = { 'JPEG' },
@@ -20,9 +22,13 @@ return {
 
   hidePrintResolution = true,
 
-  -- exportPresetFields = {
-  --   { key = "httpPreset", default = nil }
-  -- },
+  exportPresetFields = {
+    -- { key = "httpPreset", default = nil }
+    { key = 'LR_size_resizeType', default = 'longEdge' },
+    { key = 'LR_size_units', default = 'pixels' },
+    { key = 'LR_size_maxHeight', default = 2000 },
+    { key = 'LR_size_doNotEnlarge', default = true},
+  },
 
   startDialog = PhotolandMain.startDialog,
 
