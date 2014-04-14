@@ -54,9 +54,6 @@ function PhotolandMain.startDialog(propertyTable)
   LrTasks.startAsyncTask( function ()
     
     local photos = catalog:getTargetPhotos()
-    -- dump('photos', photos)
-    -- dump('meta', photos[1]:getFormattedMetadata('title'))
-    -- dump('meta', photos[1]:getPropertyForPlugin('com.adobe.lightroom.photoland', 'course'))
 
     local customMeta = catalog:batchGetPropertyForPlugin(photos, 'com.adobe.lightroom.photoland', PhotolandMain.requiredMetadata.photoland)
     local adobeMeta = catalog:batchGetFormattedMetadata(photos, PhotolandMain.requiredMetadata.adobe)
@@ -81,51 +78,11 @@ function PhotolandMain.startDialog(propertyTable)
       end
     end
 
-
-
-    -- dump('meta', customMeta)
-    -- dump('adobe', adobeMeta)
-
-    -- dump('validFunc', PhotolandMain.isValidMeta(customMeta))
-    -- dump('validFuncAdobe', PhotolandMain.isValidMeta(adobeMeta))
-
-
-    -- if PhotolandMain.isValidMeta(customMeta) and PhotolandMain.isValidMeta(adobeMeta) then
-    --   propertyTable.validMeta = true
-    -- end
-    -- PhotolandMain.isValidMeta(customMeta)
-    -- PhotolandMain.isValidMeta(adobeMeta)
-    -- dump('table', customMeta)
-
   end)
-
-  -- dump('valid', propertyTable.validMeta)
 
   PhotolandMain.updateStatus(propertyTable)
   
 end
-
-
--- obsolete
---[[----------------------------------------------------------------------------
--- Utility. Checks if the metadata in the array pf photos is set.
-------------------------------------------------------------------------------]]
--- function PhotolandMain.isValidMeta( photoArray )
-
---   for _, photo in pairs(photoArray) do
---     for metaKey, metaValue in pairs(photo) do
-
---       -- dump('value', metaValue)
---       if metaValue == '' or metaValue == nil then
---         -- dump('empty string', _)
---         -- return false
---       end
-
---     end
---   end
-
---   return true
--- end
 
 
 

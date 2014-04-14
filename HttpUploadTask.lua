@@ -21,16 +21,16 @@ local debug, info, warn, err = logger:quick('debug', 'info', 'warn', 'err')
 
 --test stuff
 local addr = 'http://localhost:8888/photo/index.php'
-local content = {
-  {
-    name = 'item_meta[93]',
-    value = 'test value',
-  },
-  {
-    name = 'item_meta[96]',
-    value = 'value 2'
-  }
-}
+-- local content = {
+--   {
+--     name = 'item_meta[93]',
+--     value = 'test value',
+--   },
+--   {
+--     name = 'item_meta[96]',
+--     value = 'value 2'
+--   }
+-- }
 
 -------------------------------------------------------------------------------
 
@@ -43,8 +43,6 @@ function HttpUploadTask.processRenderedPhotos( functionContext, exportContext )
   local exportParams = exportContext.propertyTable
   local httpPreset = exportParams.httpPreset
   local catalog = exportSession.catalog
-
-  -- local response, headers = LrHttp.postMultipart(addr, content)
 
   -- Make progress dialog.
   local nPhotos = exportSession:countRenditions()
@@ -62,8 +60,9 @@ function HttpUploadTask.processRenderedPhotos( functionContext, exportContext )
 
     local photo = rendition.photo
 
-    -- get metadata for post request
+    -- set up metadata
     local metadata = {}
+
     -- custom metadata
     for _, value in pairs(PhotolandMain.requiredMetadata.photoland) do
       metadata[value] = photo:getPropertyForPlugin('com.adobe.lightroom.photoland', value)
@@ -121,7 +120,7 @@ function HttpUploadTask.processRenderedPhotos( functionContext, exportContext )
     -- create mime chunks for each form field
     for k, v in pairs(fieldMap) do
       if metadata[v] then
-        mimeChunks[#mimeChunks + 1] = { name = k, value = metadata[v]}
+        mimeChunks[#mimeChunks + 1] = { name = k, value = metadata[v] }
       end
     end
 
@@ -131,6 +130,6 @@ function HttpUploadTask.processRenderedPhotos( functionContext, exportContext )
     dump('response', response)
 
 
-  end
+  end -- end render loop
 
 end
