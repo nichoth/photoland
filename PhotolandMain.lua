@@ -45,7 +45,7 @@ function PhotolandMain.startDialog(propertyTable)
 
   -- set up property table for copyright stuff
   propertyTable.agree = false
-  propertyTable.validMeta = false
+  propertyTable.validMeta = true
 
   -- add observer for copyright
   propertyTable:addObserver( 'agree', PhotolandMain.updateStatus )
